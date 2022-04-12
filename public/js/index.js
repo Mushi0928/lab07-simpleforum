@@ -9,7 +9,15 @@ function init() {
             /// TODO 5: Complete logout button event
             ///         1. Add a listener to logout button 
             ///         2. Show alert when logout success or error (use "then & catch" syntax)
-
+            var logout_btn = document.getElementById("logout-btn");
+            logout_btn.addEventListener('click',()=>{
+                firebase.auth().signOut()
+                .then(()=>{
+                    alert("Logout successfully!");
+                }).catch(()=>{
+                    alert("Something occured when logging out!");
+                });
+            });
 
         } else {
             // It won't show any post if not login
@@ -21,7 +29,6 @@ function init() {
     var post_btn = document.getElementById('post_btn');
     var post_txt = document.getElementById('comment');
     
-
     post_btn.addEventListener('click', function() {
         if (post_txt.value != "") {
             /// TODO 6: Push the post to database's "com_list" node
@@ -32,6 +39,10 @@ function init() {
                 data: post_txt.value,
                 email: user_email
             };
+            var database = firebase.database();
+
+            database.ref('com_list').push(post_data);
+            post_txt.value = "";
         }
     });
 
@@ -53,7 +64,10 @@ function init() {
     ///         and it will be triggered again every time a new child is added. So it can handle both history posts and new posts.
     ///         https://firebase.google.com/docs/reference/node/firebase.database.Reference#on
 
-
+    var postDB = firebase.database().ref('com_list');
+    postDB.on('child_added', (snapshot)=>{
+        show_post(snapshot.val());
+    });
 
 }
 

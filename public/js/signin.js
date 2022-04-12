@@ -23,7 +23,15 @@ function initApp() {
         ///         1. Get user input email and password to signup
         ///         2. Show success message by "create_alert()" and clean input field
         ///         3. Show error message by "create_alert()" and clean input field
-
+        console.log("signup");
+        firebase.auth().createUserWithEmailAndPassword(txtEmail.value, txtPassword.value)
+        .then((userCredential)=>{
+            create_alert("success", "Signup successfully!");
+        }).catch((errorMSG)=>{
+            create_alert("error", "Some problem occured!");
+        });
+        txtEmail.value = "";
+        txtPassword.value = "";
     });
 
     btnLogin.addEventListener('click', function() {
@@ -32,7 +40,12 @@ function initApp() {
         ///         2. Back to index.html when login success
         ///         3. Show error message by "create_alert()" and clean input field
 
-
+        firebase.auth().signInWithEmailAndPassword(txtEmail.value, txtPassword.value)
+        .then(()=>{
+            window.location = "../index.html";
+        }).catch(()=>{
+            create_alert("error","Sign in failed!");
+        });
     });
 
     btnGoogle.addEventListener('click', function() {
@@ -40,8 +53,14 @@ function initApp() {
         ///         1. Use popup function to login google
         ///         2. Back to index.html when login success
         ///         3. Show error message by "create_alert()"
+        var provider = new firebase.auth.GoogleAuthProvider;
 
-
+        firebase.auth().signInWithPopup(provider)
+        .then((result)=>{
+            window.location = "../index.html";
+        }).catch((error)=>{
+            create_alert("error","Sign in failed!");
+        });
     });
 
 
